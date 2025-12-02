@@ -1,53 +1,98 @@
-# Internship Research: Enabling XAI in IoT-enhanced Spaces
+# xai_iot — Internship Research: Enabling XAI in IoT‑enhanced Spaces
 
-The objective of this internship is to explain data drifts (virtual drifts): changes in the input data distribution:
+Ce projet a été réalisé dans le cadre d’un stage de recherche, et explore l’application de l’**Explainable AI (XAI)** dans des environnements IoT (objets/espaces connectés), avec un accent particulier sur la **détection et l’explication des data‑drifts**.
 
-1. Detect data drift: measure difference between input distributions using metrics: Hellinger Distance and KL-Divergence. 
-2. Correlate data drift with concept drift: understand when and how changes in input data distributions lead to changes in the predictive model
-3. Explain the impact of data drift: identify features responsible for the shift and how they contribute to model performance
+---
 
+## 📌 Sommaire
 
-## First Approach: Using HDDDM
+- [xai\_iot — Internship Research: Enabling XAI in IoT‑enhanced Spaces](#xai_iot--internship-research-enabling-xai-in-iotenhanced-spaces)
+  - [📌 Sommaire](#-sommaire)
+  - [🎯 Objectif du projet](#-objectif-du-projet)
+  - [✨ Fonctionnalités / Approches principales](#-fonctionnalités--approches-principales)
+  - [🧩 Structure du projet / Architecture](#-structure-du-projet--architecture)
+  - [🚀 Installation \& Déploiement](#-installation--déploiement)
+  - [🛠️ Technologies \& Outils utilisés](#️-technologies--outils-utilisés)
+  - [👥 Auteur \& Licence](#-auteur--licence)
+  
+---
 
-The first approach use HDDDM detector located in HDDDM folder ([here](./HDDDM/)). Tests are realized with synthetical data.
+## 🎯 Objectif du projet
 
-## Second Approach
+- **Détecter les data drifts** (variations dans la distribution des données d’entrée) grâce à des techniques statistiques et des détecteurs adaptés.  
+- **Analyser la corrélation entre data drift et concept drift** : comprendre quand un changement dans la distribution des données affecte le comportement ou la performance d’un modèle prédictif.  
+- **Expliquer l’impact des data drifts** : identifier les variables/features responsables du changement, et observer comment elles influencent les performances ou les décisions du modèle.  
 
-The second approach use Concept Drifts Detectors and detects Data Drifts to explain Concept Drifts Detectors located in data-drifts-detection folder ([here](./data-drifts-detection/)).
+---
 
-### Datasets
+## ✨ Fonctionnalités / Approches principales
 
-The dataset used are in the concept-drift-datasets-scikit-multiflow-master folder ([here](./concept-drift-datasets-scikit-multiflow-master/)).
+- Implémentation d’un **détecteur HDDDM** pour la détection de data drift (via le dossier `HDDDM`).  
+- Utilisation de plusieurs **detecteurs de concept drift / data drift** (via le dossier `data-drifts-detection`) — comme D3, ADWIN, EDDM — combinés à des métriques de divergence (ex : distance de Hellinger, divergence KL) pour quantifier les changements.  
+- Prise en charge de **datasets variés** (depuis `concept-drift-datasets-scikit-multiflow-master`) pour tester les détections sur des cas réels ou réalistes.  
+- Scripts pour exécuter les détecteurs avec paramètres customisés, analyser les résultats et générer des visualisations / statistiques.  
+- Un dossier `results` contenant les résultats des expérimentations — utile pour comparer les performances, visualiser les drifts, etc.  
 
-### Run
+---
 
-Detectors D3, ADWIN and EDDM are used with their original results and with the Hellinger distance and KL-divergence.
-To run D3 use the command: 
+## 🧩 Structure du projet / Architecture
+
+```text
+/ (racine)
+├── HDDDM/                 # Implémentation du détecteur HDDDM (data drift)
+├── data-drifts-detection/ # Autres détecteurs de drift (D3, ADWIN, EDDM, etc.) + versions avec Hellinger/KL
+    └── results/              # Résultats des analyses / expérimentations
+└── concept-drift-datasets-scikit-multiflow-master/ # Jeux de données utilisés pour les tests
 ```
+
+---
+
+## 🚀 Installation \& Déploiement
+
+Exemple d’utilisation :
+
+```python
+# Pour exécuter le détecteur D3 sur un dataset
 python .\data-drifts-detection\<detector.py> <dataset> <size of the old data> <percentage of new data with respect to old> <threshold for auc>
-```
-Example:
-```
-python .\data-drifts-detection\D3.py .\concept-drift-datasets-scikit-multiflow-master\real-world\elec.csv 100 0.1 0.7
-```
 
-To run ADWIN or EDDM use the command: 
-```
+# Exemple
+python ./data-drifts-detection/D3.py ./concept-drift-datasets-scikit-multiflow-master/real-world/elec.csv 100 0.1 0.7
+
+# Pour exécuter ADWIN ou EDDM :
 python .\data-drifts-detection\<detector.py> <dataset> <size of the old data> <percentage of new data with respect to old>
-```
-Example:
-```
-python .\data-drifts-detection\ADWIN.py .\concept-drift-datasets-scikit-multiflow-master\real-world\elec.csv 100 0.1
+
+# Exemple
+python ./data-drifts-detection/ADWIN.py ./concept-drift-datasets-scikit-multiflow-master/real-world/elec.csv 100 0.1
+
+# Pour générer les versions avec Hellinger + KL divergence :
+python ./data-drifts-detection/D3_hellinger_kl.py ...
 ```
 
-And too see Hellinger distance and KL-divergence the commands are the same but with "_hellinger_kl" for each detector name.
-Example:
-```
-python .\data-drifts-detection\D3_hellinger_kl.py .\concept-drift-datasets-scikit-multiflow-master\real-world\elec.csv 100 0.1 0.7
-```
+- Les paramètres attendus sont, par exemple :
 
-The code to generate the synthetic dataset is also located in the folder and you can also plot datasets to see the drifts.
+1. Le chemin vers le dataset CSV,
+2. La taille de l’ancien segment de données,
+3. Le pourcentage de nouvelles données,
+4. Un seuil éventuellement (pour AUC ou autre selon le détecteur).
 
-### Results
+- Les résultats (indicateurs de drift, alertes, graphiques, logs) seront sauvegardés dans le dossier results/.
 
-Finally the results found during this internship are located in the folder [results](./data-drifts-detection/results/)
+---
+
+## 🛠️ Technologies & Outils utilisés
+
+| Technologie         | Rôle              |
+| ------------------- | ----------------- |
+| **Python**          | Langage principal des scripts et notebooks |
+| **Jupyter Notebook**             | Expérimentation, analyse des résultats et visualisation |
+| **Bibliothèques (pandas, numpy, …)**          | Manipulation des données et calculs statistiques |
+| **Détecteurs de drift (HDDDM, ADWIN, EDDM, D3…)**             | Identifier des changements dans les flux de données |
+| **Métriques statistiques**             | Comparer distributions d’avant vs après |
+
+---
+
+## 👥 Auteur & Licence
+
+- **Auteur** : Nathan Chrismant — Étudiant M2 Informatique, ENSEA / Cergy Paris Université.
+
+Projet distribué sous licence **Open Source**.
